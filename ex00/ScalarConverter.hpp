@@ -16,16 +16,33 @@
 
 #include <iostream>
 #include <exception>
+#include <limits>
+#include <cctype>
+#include <string>
 
 class ScalarConverter {
-public:
+private:
     ScalarConverter();
-    ScalarConverter(const ScalarConverter &other);
-    ScalarConverter &operator=(const ScalarConverter &other);
-    ~ScalarConverter();
 
+public:
+    static void convert(const std::string& literal);
+    enum Type { CHAR, INT, FLOAT, DOUBLE, PSEUDO, INVALID };
 
-    static void convert(std::string &type);
+private:
+    static Type detectType(const std::string& literal);
+    static double parseToDouble(const std::string& literal);
+
+    static void handleChar(char c);
+    static void handleNumber(const std::string& literal);
+    static void handlePseudo(const std::string& literal);
+
+    static bool isChar(const std::string& literal);
+    static bool isPseudoLiteral(const std::string& literal);
+    
+    // checking
+    static bool isValidInt(const std::string& literal);
+    static bool isValidDouble(const std::string& literal);
+    static bool isValidFloat(const std::string& literal);
 };
 
 # endif
