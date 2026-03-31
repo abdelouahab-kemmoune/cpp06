@@ -23,18 +23,8 @@ bool ScalarConverter::isPseudoLiteral(const std::string &literal) {
             || literal == "-inf" || literal == "+inf" || literal == "nan");
 }
 
-void ScalarConverter::handleChar(char c) {
-    if (c >= 32 && c <= 126)
-        std::cout << "char: " << c << '\n';
-    else
-        std::cout << "char: Non displayable" << "\n";
-    std::cout << "int: " << static_cast<int>(c) << "\n";
-    std::cout << "float: " << static_cast<float>(c) << "\n";
-    std::cout << "double: " << static_cast<double>(c) << "\n"; 
-}
-
 bool ScalarConverter::isValidInt(const std::string& literal) {
-    int i = 0;
+    size_t i = 0;
     if (literal.empty())
         return false;
     if (literal[0] == '+' || literal[0] == '-')
@@ -87,27 +77,82 @@ bool ScalarConverter::isValidDouble(const std::string& literal) {
 bool ScalarConverter::isValidFloat(const std::string& literal) {
     if (literal.size() < 2)
         return false;
-    if (literal[literal.length() - 1] == 'f')
+    if (literal[literal.size() - 1] != 'f')
         return false;
-    
+    std::string base = literal.substr(0, literal.size() - 1);
+
+    if (isValidInt(base))
+        return true;
+
+    if (isValidDouble(base))
+        return true;
+
+    return false;
 }
 
 
+ScalarConverter::Type ScalarConverter::detectType(const std::string& literal) {
+    if (isPseudoLiteral(literal))
+        return PSEUDO;
 
+    if (isChar(literal))
+        return CHAR;
 
-// ScalarConverter::Type ScalarConverter::detectType(const std::string& literal) {
-//     int i;
-//     while (i = 0)
-//     if (isPseudoLiteral(literal))
-//         return PSEUDO;
-//     if (isChar(literal))
-//         return CHAR;
-//     if (literal[literal.size() - 1] == 'f')
-//         if (isdigit(literal[i]))
-//             return FLOAT;
-//         else
-//             std::cout << "invalid" << "\n";
-//     if (literal.find('.') != std::string::npos)
-//         return DOUBLE;
-//     if (literal)
-// }
+    if (isValidFloat(literal))
+        return FLOAT;
+
+    if (isValidDouble(literal))
+        return DOUBLE;
+
+    if (isValidInt(literal))
+        return INT;
+
+    return INVALID;
+}
+
+void ScalarConverter::handleChar(char c) {
+    if (c >= 32 && c <= 126)
+        std::cout << "char: " << c << '\n';
+    else
+        std::cout << "char: Non displayable" << "\n";
+    std::cout << "int: " << static_cast<int>(c) << "\n";
+    std::cout << "float: " << static_cast<float>(c) << "\n";
+    std::cout << "double: " << static_cast<double>(c) << "\n"; 
+}
+
+void ScalarConverter::handleNumber(const std::string& literal) {
+    std::string temp = literal;
+    if (temp.empty())
+        return ;
+    if (temp[temp.size() - 1] == 'f')
+        temp.erase(temp.size() - 1);
+    char *end;
+    double value = std::strtod(temp.c_str(), &end);
+
+    //char
+    if (value < 0 || value > 127 || std::isnan(value))
+        std::cout << "char: impossible" << "\n";
+    else if (!std::isprint(static_cast<int>(value)))
+        std::cout << "char: Non displayable" << "\n";
+    else
+        std::cout << "char: " << static_cast<char>(value) << "\n";
+    
+    //int
+    if (value < INT_MIN || value > INT_MAX || std::isnan(value))
+        std::cout << "int: impossible" << "\n";
+    else
+        std::cout << "int: " << static_cast<int>(value) << "\n";
+
+    //float
+    float f = static_cast<float>(value);
+
+    std::cout << "float: " << f;
+    if (f == static_cast<int>(f))
+        std::cout << ".0";
+    std::cout <<"f\n";
+
+    //double
+    std::cout << "double: " << value;
+    if (value == static_cast<int>(value))
+        std::cout << ".0" << "\n";
+}
