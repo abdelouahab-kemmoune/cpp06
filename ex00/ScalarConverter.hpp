@@ -45,6 +45,8 @@ private:
     static bool isValidInt(const std::string& literal);
     static bool isValidDouble(const std::string& literal);
     static bool isValidFloat(const std::string& literal);
+
+    static void ScalarConverter::convert(const std::string& literal);
 };
 
 # endif

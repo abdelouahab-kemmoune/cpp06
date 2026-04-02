@@ -156,3 +156,44 @@ void ScalarConverter::handleNumber(const std::string& literal) {
     if (value == static_cast<int>(value))
         std::cout << ".0" << "\n";
 }
+
+void ScalarConverter::handlePseudo(const std::string& literal) {
+    std::cout << "char: impossible\n";
+    std::cout << "int: impossible\n";
+
+    if (literal[literal.size() - 1] == 'f')
+    {
+        std::cout << "float: " << literal << "\n";
+        std::cout << "double: " << literal.substr(0, literal.size() - 1) << "\n";
+    }
+    else
+    {
+        std::cout << "float: " << literal << "f\n";
+        std::cout << "double: " << literal << "\n";
+    }
+}
+
+void ScalarConverter::convert(const std::string& literal)
+{
+    Type type = detectType(literal);
+
+    if (type == CHAR)
+    {
+        handleChar(literal[0]);
+    }
+    else if (type == PSEUDO)
+    {
+        handlePseudo(literal);
+    }
+    else if (type == INT || type == FLOAT || type == DOUBLE)
+    {
+        handleNumber(literal);
+    }
+    else
+    {
+        std::cout << "char: impossible\n";
+        std::cout << "int: impossible\n";
+        std::cout << "float: impossible\n";
+        std::cout << "double: impossible\n";
+    }
+}
