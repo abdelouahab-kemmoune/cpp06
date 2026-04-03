@@ -151,6 +151,7 @@ void ScalarConverter::handleNumber(const std::string& literal) {
         std::cout << ".0";
     std::cout <<"f\n";
 
+    
     //double
     std::cout << "double: " << value;
     if (value == static_cast<int>(value))
