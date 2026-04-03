@@ -127,7 +127,7 @@ void ScalarConverter::handleNumber(const std::string& literal) {
     if (temp[temp.size() - 1] == 'f')
         temp.erase(temp.size() - 1);
     char *end;
-    double value = std::strtod(temp.c_str(), &end);
+    double value = strtod(temp.c_str(), &end);
 
     //char
     if (value < 0 || value > 127 || std::isnan(value))
@@ -154,7 +154,8 @@ void ScalarConverter::handleNumber(const std::string& literal) {
     //double
     std::cout << "double: " << value;
     if (value == static_cast<int>(value))
-        std::cout << ".0" << "\n";
+        std::cout << ".0";
+    std::cout << "\n";
 }
 
 void ScalarConverter::handlePseudo(const std::string& literal) {
