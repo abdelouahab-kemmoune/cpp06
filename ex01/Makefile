@@ -1,4 +1,4 @@
-NAME = cast
+NAME = serialize
 CC = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 

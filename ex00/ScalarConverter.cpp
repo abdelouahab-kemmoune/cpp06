@@ -116,63 +116,66 @@ void ScalarConverter::handleChar(char c) {
     else
         std::cout << "char: Non displayable" << "\n";
     std::cout << "int: " << static_cast<int>(c) << "\n";
-    std::cout << "float: " << static_cast<float>(c) << "\n";
-    std::cout << "double: " << static_cast<double>(c) << "\n"; 
+    std::cout << std::fixed << std::setprecision(1);
+    std::cout << "float: " << static_cast<float>(c) << "f\n";
+    std::cout << "double: " << static_cast<double>(c) << "\n";
 }
 
 void ScalarConverter::handleNumber(const std::string& literal) {
     std::string temp = literal;
     if (temp.empty())
-        return ;
+        return;
+
     if (temp[temp.size() - 1] == 'f')
         temp.erase(temp.size() - 1);
-    char *end;
+
+    char* end;
     double value = strtod(temp.c_str(), &end);
 
-    //char
-    if (value < 0 || value > 127 || std::isnan(value))
-        std::cout << "char: impossible" << "\n";
-    else if (!std::isprint(static_cast<int>(value)))
-        std::cout << "char: Non displayable" << "\n";
+    if (*end != '\0') {
+        std::cout << "Invalid input\n";
+        return;
+    }
+    // char
+    if (value < 0 || value > 127 || std::isnan(value) || std::isinf(value))
+        std::cout << "char: impossible\n";
+    else if (!std::isprint(static_cast<unsigned char>(value)))
+        std::cout << "char: Non displayable\n";
     else
         std::cout << "char: " << static_cast<char>(value) << "\n";
-    
-    //int
-    if (value < INT_MIN || value > INT_MAX || std::isnan(value))
-        std::cout << "int: impossible" << "\n";
+
+    // int
+    if (value < INT_MIN || value > INT_MAX || std::isnan(value) || std::isinf(value))
+        std::cout << "int: impossible\n";
     else
         std::cout << "int: " << static_cast<int>(value) << "\n";
 
-    //float
+    // float & double
     float f = static_cast<float>(value);
 
-    std::cout << "float: " << f;
-    if (f == static_cast<int>(f))
-        std::cout << ".0";
-    std::cout <<"f\n";
-
-    
-    //double
-    std::cout << "double: " << value;
-    if (value == static_cast<int>(value))
-        std::cout << ".0";
-    std::cout << "\n";
+    std::cout << std::fixed << std::setprecision(1);
+    std::cout << "float: " << f << "f\n";
+    std::cout << "double: " << value << "\n";
 }
 
 void ScalarConverter::handlePseudo(const std::string& literal) {
+    if (literal.empty())
+        return;
+
     std::cout << "char: impossible\n";
     std::cout << "int: impossible\n";
 
-    if (literal[literal.size() - 1] == 'f')
-    {
-        std::cout << "float: " << literal << "\n";
-        std::cout << "double: " << literal.substr(0, literal.size() - 1) << "\n";
-    }
-    else
-    {
-        std::cout << "float: " << literal << "f\n";
-        std::cout << "double: " << literal << "\n";
-    }
+    std::string base = literal;
+
+    if (!base.empty() && base[base.size() - 1] == 'f')
+        base = base.substr(0, base.size() - 1);
+
+    if (base == "inf")
+        base = "+inf";
+
+    std::cout << "float: " << base << "f\n";
+
+    std::cout << "double: " << base << "\n";
 }
 
 void ScalarConverter::convert(const std::string& literal)

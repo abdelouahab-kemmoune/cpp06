@@ -21,6 +21,7 @@
 #include <cctype>
 #include <string>
 #include <cmath>
+#include <iomanip>
 
 class ScalarConverter {
 private:
@@ -28,11 +29,10 @@ private:
 
 public:
     static void convert(const std::string& literal);
-    enum Type { CHAR, INT, FLOAT, DOUBLE, PSEUDO, INVALID };
 
 private:
+    enum Type { CHAR, INT, FLOAT, DOUBLE, PSEUDO, INVALID };
     static Type detectType(const std::string& literal);
-    static double parseToDouble(const std::string& literal);
 
     static void handleChar(char c);
     static void handleNumber(const std::string& literal);
